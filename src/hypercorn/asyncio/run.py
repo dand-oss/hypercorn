@@ -19,6 +19,7 @@ from ..utils import (
     load_application,
     MustReloadException,
     observe_changes,
+    observe_sdl_changes,
     raise_shutdown,
     repr_socket_addr,
     restart,
@@ -79,6 +80,9 @@ async def worker_serve(
 
     if config.use_reloader:
         tasks.append(loop.create_task(observe_changes(asyncio.sleep)))
+
+    if config.sdl:
+        tasks.append(loop.create_task(observe_sdl_changes(asyncio.sleep, config.sdl)))
 
     ssl_handshake_timeout = None
     if config.ssl_enabled:

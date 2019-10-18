@@ -117,23 +117,32 @@ async def observe_changes(sleep: Callable[[float], Awaitable[Any]]) -> None:
                     raise MustReloadException()
                 last_updates[module] = mtime
 
+        await sleep(1)
+
+
+async def observe_sdl_changes(
+        sleep: Callable[[float], Awaitable[Any]],
+        sdl_list: List
+) -> None:
+    last_ext_update = {}
+    while True:
         # HACK: add 1 more file to watch - abs path for now
-        track_file_path = '/i/src/winglue/apps/tao2py/aria/ext_model.graphql'
-        try:
-            t_mtime = Path(track_file_path).stat().st_mtime
-            if t_mtime > last_ext_update.get(track_file_path, t_mtime):
-                # trying to regenerate graphQL file and BS
-                import subprocess
-                process = subprocess.Popen(
-                    ["/bin/bash",
-                     "gen-sdl.sh",
-                     "var=11; ignore all",
-                     "/home/appsmith/asv/src/winglue/apps/tao2py/"])
-                process.wait()
-                raise MustReloadException()
-            last_ext_update[track_file_path] = t_mtime
-        except FileNotFoundError:
-            continue
+        for sdl in sdl_list:
+            try:
+                t_mtime = Path(sdl).stat().st_mtime
+                if t_mtime > last_ext_update.get(sdl, t_mtime):
+                    # trying to regenerate graphQL file and BS
+                    import subprocess
+                    process = subprocess.Popen(
+                        ["/bin/bash",
+                         "gen-sdl.sh",
+                         "var=11; ignore all",
+                         "/home/appsmith/asv/src/winglue/apps/tao2py/"])
+                    process.wait()
+                    raise MustReloadException()
+                last_ext_update[sdl] = t_mtime
+            except FileNotFoundError:
+                continue
         # END HACK
 
         await sleep(1)

@@ -162,6 +162,13 @@ def main(sys_args: Optional[List[str]] = None) -> None:
         default=sentinel,
         type=int,
     )
+    parser.add_argument(
+        "--reload-sdls",
+        dest="reload_sdls",
+        help="Reload SDL files",
+        default=[],
+        action="append",
+    )
     args = parser.parse_args(sys_args or sys.argv[1:])
     config = _load_config(args.config)
     config.application_path = args.application
@@ -232,6 +239,9 @@ def main(sys_args: Optional[List[str]] = None) -> None:
         config.insecure_bind = args.insecure_binds
     if len(args.quic_binds) > 0:
         config.quic_bind = args.quic_binds
+
+    if len(args.reload_sdls) > 0:
+        config.sdl = args.reload_sdls
 
     run(config)
 

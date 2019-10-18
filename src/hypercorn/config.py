@@ -36,6 +36,7 @@ class Config:
     _insecure_bind: List[str] = []
     _quic_bind: List[str] = []
     _log: Optional[Logger] = None
+    _sdl: List[str] = []
 
     access_log_format = '%(h)s %(l)s %(l)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
     accesslog: Union[logging.Logger, str, None] = None
@@ -100,6 +101,17 @@ class Config:
             self._bind = [value]
         else:
             self._bind = value
+
+    @property
+    def sdl(self) -> List[str]:
+        return self._sdl
+
+    @sdl.setter
+    def sdl(self, value: Union[List[str], str]) -> None:
+        if isinstance(value, str):
+            self._sdl = [value]
+        else:
+            self._sdl = value
 
     @property
     def insecure_bind(self) -> List[str]:

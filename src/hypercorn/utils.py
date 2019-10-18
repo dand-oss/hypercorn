@@ -134,7 +134,7 @@ async def observe_sdl_changes(
                     # trying to regenerate graphQL file and BS
                     import subprocess
                     env_asi = os.environ['ASI']
-                    script_dir = Path(env_asi, 'apps', 'tao2py')
+                    script_dir = Path('/pytao2')
                     process = subprocess.Popen(
                         ["/bin/bash",
                          "gen-sdl.sh",

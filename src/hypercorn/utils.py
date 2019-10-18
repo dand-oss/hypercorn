@@ -133,11 +133,13 @@ async def observe_sdl_changes(
                 if t_mtime > last_ext_update.get(sdl, t_mtime):
                     # trying to regenerate graphQL file and BS
                     import subprocess
+                    env_asi = os.environ['ASI']
+                    script_dir = Path(env_asi, 'apps', 'tao2py')
                     process = subprocess.Popen(
                         ["/bin/bash",
                          "gen-sdl.sh",
                          "var=11; ignore all",
-                         "/home/appsmith/asv/src/winglue/apps/tao2py/"])
+                         script_dir])
                     process.wait()
                     raise MustReloadException()
                 last_ext_update[sdl] = t_mtime
